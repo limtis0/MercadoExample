@@ -3,8 +3,10 @@ package com.example.mercado.remote.domain
 import com.example.mercado.remote.data.OAuthDTO
 import com.example.mercado.remote.data.shops.ShopRequest
 import com.example.mercado.remote.data.shops.ShopDTO
-import com.example.mercado.remote.data.shops.StoreSearchResponse
+import com.example.mercado.remote.data.shops.ShopDeleteResponse
+import com.example.mercado.remote.data.shops.ShopSearchResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -34,8 +36,15 @@ interface MercadoService {
 
     @Headers("Content-Type: application/json")
     @GET("/users/{user_id}/stores/search")
-    suspend fun searchShopsByExternalId(
+    suspend fun searchShopsByExternalID(
         @Path("user_id") userId: String,
         @Query("external_id") externalId: String
-    ): StoreSearchResponse
+    ): ShopSearchResponse
+
+    @Headers("Content-Type: application/json")
+    @DELETE("/users/{user_id}/stores/{id}")
+    suspend fun deleteShopByID(
+        @Path("user_id") userID: String,
+        @Path("id") shopID: String
+    ): ShopDeleteResponse
 }

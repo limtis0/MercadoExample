@@ -1,6 +1,6 @@
 package com.example.mercado.remote.data.shops
 
-data class StoreSearchResponse(
+data class ShopSearchResponse(
     val paging: Paging,
     val results: List<ShopDTO>
 )
