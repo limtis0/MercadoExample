@@ -1,6 +1,6 @@
 package com.example.mercado.remote.data.shops
 
-data class ShopResponseError(
+data class StoreResponseError(
     val error: String,
     val message: String,
     val status: Int,

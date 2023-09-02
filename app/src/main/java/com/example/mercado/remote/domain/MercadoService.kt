@@ -1,10 +1,10 @@
 package com.example.mercado.remote.domain
 
 import com.example.mercado.remote.data.OAuthDTO
-import com.example.mercado.remote.data.shops.ShopRequest
-import com.example.mercado.remote.data.shops.ShopDTO
-import com.example.mercado.remote.data.shops.ShopDeleteResponse
-import com.example.mercado.remote.data.shops.ShopSearchResponse
+import com.example.mercado.remote.data.shops.CreateStoreRequest
+import com.example.mercado.remote.data.shops.StoreDTO
+import com.example.mercado.remote.data.shops.StoreDeleteResponse
+import com.example.mercado.remote.data.shops.StoreSearchResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
@@ -21,7 +21,7 @@ interface MercadoService {
     @FormUrlEncoded
     @POST("oauth/token")
     suspend fun refreshAccessToken(
-        @Field("client_id") clientId: String,
+        @Field("client_id") clientID: String,
         @Field("client_secret") clientSecret: String,
         @Field("grant_type") grantType: String,  // Should equal "refresh_token"
         @Field("refresh_token") refreshToken: String
@@ -29,22 +29,22 @@ interface MercadoService {
 
     @Headers("Content-Type: application/json")
     @POST("/users/{user_id}/stores")
-    suspend fun createNewShop(
-        @Path("user_id") userId: String,
-        @Body shopRequest: ShopRequest
-    ): ShopDTO
+    suspend fun createNewStore(
+        @Path("user_id") userID: String,
+        @Body createStoreRequest: CreateStoreRequest
+    ): StoreDTO
 
     @Headers("Content-Type: application/json")
     @GET("/users/{user_id}/stores/search")
-    suspend fun searchShopsByExternalID(
-        @Path("user_id") userId: String,
+    suspend fun searchStoresByExternalID(
+        @Path("user_id") userID: String,
         @Query("external_id") externalId: String
-    ): ShopSearchResponse
+    ): StoreSearchResponse
 
     @Headers("Content-Type: application/json")
     @DELETE("/users/{user_id}/stores/{id}")
-    suspend fun deleteShopByID(
+    suspend fun deleteStoreByID(
         @Path("user_id") userID: String,
         @Path("id") shopID: String
-    ): ShopDeleteResponse
+    ): StoreDeleteResponse
 }

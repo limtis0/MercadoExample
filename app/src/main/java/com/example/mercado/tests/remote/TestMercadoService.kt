@@ -1,7 +1,7 @@
 package com.example.mercado.tests.remote
 
 import com.example.mercado.remote.data.shops.Location
-import com.example.mercado.remote.data.shops.ShopRequest
+import com.example.mercado.remote.data.shops.CreateStoreRequest
 import com.example.mercado.remote.domain.MercadoAPI
 import com.example.mercado.tests.DaggerTestComponent
 import kotlinx.coroutines.runBlocking
@@ -16,7 +16,7 @@ class TestMercadoService {
     @Inject
     lateinit var mercadoAPI: MercadoAPI
 
-    private val shopData = ShopRequest(
+    private val storeData = CreateStoreRequest(
         name = "TestShop",
         external_id = "TEST-SHP-001",
         location = Location(
@@ -45,12 +45,12 @@ class TestMercadoService {
     fun testTryCreateShop() {
         runBlocking {
             // Act
-            val shop = mercadoAPI.tryCreateShop(shopData)
+            val store = mercadoAPI.tryCreateStore(storeData)
 
             // Assert
-            assertNotNull(shop)
-            assertEquals(shopData.name, shop.name)
-            assertEquals(shopData.external_id, shop.external_id)
+            assertNotNull(store)
+            assertEquals(storeData.name, store.name)
+            assertEquals(storeData.external_id, store.external_id)
         }
     }
 
@@ -58,17 +58,17 @@ class TestMercadoService {
     fun testFindShopByExternalID() {
         runBlocking {
             // Arrange
-            mercadoAPI.tryCreateShop(shopData)
+            mercadoAPI.tryCreateStore(storeData)
 
             // Act
-            val shop = mercadoAPI.getShop(shopData.external_id)
+            val store = mercadoAPI.getStore(storeData.external_id)
 
             // Assert
-            assertNotNull(shop)
-            shop!!
+            assertNotNull(store)
+            store!!
 
-            assertEquals(shopData.external_id, shop.external_id)
-            assertEquals(shopData.name, shop.name)
+            assertEquals(storeData.external_id, store.external_id)
+            assertEquals(storeData.name, store.name)
         }
     }
 
@@ -79,10 +79,10 @@ class TestMercadoService {
 
         runBlocking {
             // Act
-            val shop = mercadoAPI.getShop(shopExternalID)
+            val store = mercadoAPI.getStore(shopExternalID)
 
             // Assert
-            assertNull(shop)
+            assertNull(store)
         }
     }
 
@@ -90,15 +90,15 @@ class TestMercadoService {
     fun testDeleteShop() {
         runBlocking {
             // Arrange
-            val shop = mercadoAPI.tryCreateShop(shopData)
+            val store = mercadoAPI.tryCreateStore(storeData)
 
             // Act
-            mercadoAPI.deleteShop(shop.id)
+            mercadoAPI.deleteStore(store.id)
 
-            val foundShop = mercadoAPI.getShop(shop.external_id)
+            val foundStore = mercadoAPI.getStore(store.external_id)
 
             // Assert
-            assertNull(foundShop)
+            assertNull(foundStore)
         }
     }
 }
