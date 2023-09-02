@@ -1,4 +1,4 @@
-package com.example.mercado.remote.data.shops
+package com.example.mercado.remote.data.stores
 
 data class StoreDeleteResponse(
     val store: String,

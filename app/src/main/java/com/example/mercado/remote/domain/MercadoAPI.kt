@@ -2,9 +2,9 @@ package com.example.mercado.remote.domain
 
 import com.example.mercado.BuildConfig
 import com.example.mercado.remote.data.OAuthDTO
-import com.example.mercado.remote.data.shops.StoreDTO
-import com.example.mercado.remote.data.shops.CreateStoreRequest
-import com.example.mercado.remote.data.shops.StoreResponseError
+import com.example.mercado.remote.data.stores.StoreDTO
+import com.example.mercado.remote.data.stores.CreateStoreRequest
+import com.example.mercado.remote.data.stores.StoreResponseError
 import com.google.gson.Gson
 import retrofit2.HttpException
 

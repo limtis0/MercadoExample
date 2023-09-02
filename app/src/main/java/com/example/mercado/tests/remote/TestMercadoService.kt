@@ -1,7 +1,7 @@
 package com.example.mercado.tests.remote
 
-import com.example.mercado.remote.data.shops.Location
-import com.example.mercado.remote.data.shops.CreateStoreRequest
+import com.example.mercado.remote.data.stores.Location
+import com.example.mercado.remote.data.stores.CreateStoreRequest
 import com.example.mercado.remote.domain.MercadoAPI
 import com.example.mercado.tests.DaggerTestComponent
 import kotlinx.coroutines.runBlocking

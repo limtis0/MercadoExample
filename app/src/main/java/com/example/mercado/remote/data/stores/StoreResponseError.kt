@@ -1,4 +1,4 @@
-package com.example.mercado.remote.data.shops
+package com.example.mercado.remote.data.stores
 
 data class StoreResponseError(
     val error: String,
