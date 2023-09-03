@@ -3,44 +3,25 @@ package com.example.mercado
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.mercado.dependency_injection.ApplicationComponent
+import com.example.mercado.dependency_injection.DaggerApplicationComponent
+import com.example.mercado.ui.screens.MainScreen
 import com.example.mercado.ui.theme.MercadoExampleTheme
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        lateinit var appComponent: ApplicationComponent
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        appComponent = DaggerApplicationComponent.create()
+
         setContent {
             MercadoExampleTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+                MainScreen()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MercadoExampleTheme {
-        Greeting("Android")
     }
 }
