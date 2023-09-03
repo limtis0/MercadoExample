@@ -1,12 +1,8 @@
 package com.example.mercado.remote.data.stores
 
+import com.example.mercado.remote.data.Paging
+
 data class StoreSearchResponse(
     val paging: Paging,
-    val results: List<StoreDTO>
-)
-
-data class Paging(
-    val total: Int,
-    val offset: Int,
-    val limit: Int
+    val results: List<Store>
 )

@@ -1,15 +1,17 @@
 package com.example.mercado.remote.domain
 
 import com.example.mercado.BuildConfig
-import com.example.mercado.remote.data.OAuthDTO
-import com.example.mercado.remote.data.stores.StoreDTO
-import com.example.mercado.remote.data.stores.CreateStoreRequest
+import com.example.mercado.remote.data.OAuth
+import com.example.mercado.remote.data.pos.POS
+import com.example.mercado.remote.data.pos.POSCreateRequest
+import com.example.mercado.remote.data.stores.Store
+import com.example.mercado.remote.data.stores.StoreCreateRequest
 import com.example.mercado.remote.data.stores.StoreResponseError
 import com.google.gson.Gson
 import retrofit2.HttpException
 
-class MercadoAPI(private val service: MercadoService) {
-    suspend fun refreshAccessToken(): OAuthDTO {
+class MercadoAPI(private val service: IMercadoService) {
+    suspend fun refreshAccessToken(): OAuth {
         return service.refreshAccessToken(
             clientID = BuildConfig.mercadoUserId,
             clientSecret = BuildConfig.mercadoApiKey,
@@ -18,9 +20,9 @@ class MercadoAPI(private val service: MercadoService) {
         )
     }
 
-    suspend fun getStore(externalID: String): StoreDTO? {
+    suspend fun getStore(externalID: String): Store? {
         try {
-            val response = service.searchStoresByExternalID(BuildConfig.mercadoUserId, externalID)
+            val response = service.searchStores(BuildConfig.mercadoUserId, externalID)
             return response.results[0]
         } catch (error: HttpException) {
             if (error.code() == 404) {  // Shop not found
@@ -30,16 +32,16 @@ class MercadoAPI(private val service: MercadoService) {
         }
     }
 
-    suspend fun tryCreateStore(createStoreRequest: CreateStoreRequest): StoreDTO {
+    suspend fun tryCreateStore(storeCreateRequest: StoreCreateRequest): Store {
         try {
-            return service.createNewStore(BuildConfig.mercadoUserId, createStoreRequest)
+            return service.createNewStore(BuildConfig.mercadoUserId, storeCreateRequest)
         } catch (error: HttpException) {
             if (error.code() == 400) {
                 val errorResponseJSON = error.response()?.errorBody()?.string()
                 val errorResponse = Gson().fromJson(errorResponseJSON, StoreResponseError::class.java)
 
                 if (errorResponse.error == "bad_request") {
-                    return getStore(createStoreRequest.external_id)!!
+                    return getStore(storeCreateRequest.external_id)!!
                 }
 
                 if (errorResponse.error == "validation_error") {
@@ -57,6 +59,28 @@ class MercadoAPI(private val service: MercadoService) {
             true
         } catch (error: HttpException) {
             false
+        }
+    }
+
+    suspend fun getPOS(externalID: String): POS? {
+        val response = service.searchPOS(externalID)
+
+        if (response.paging.total == 0) {
+            return null
+        }
+
+        return response.results[0]
+    }
+
+    suspend fun tryCreatePOS(posCreateRequest: POSCreateRequest): POS {
+        try {
+            return service.createPOS(posCreateRequest)
+        } catch (error: HttpException) {
+            if (error.code() == 409) {
+                return getPOS(externalID = posCreateRequest.external_id)!!
+            }
+
+            throw error
         }
     }
 }

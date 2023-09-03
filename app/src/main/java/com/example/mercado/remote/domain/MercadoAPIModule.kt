@@ -10,7 +10,7 @@ class MercadoAPIModule {
     @Provides
     @Singleton
     fun provideMercadoAPI(retrofit: Retrofit): MercadoAPI {
-        val service = retrofit.create(MercadoService::class.java)
+        val service = retrofit.create(IMercadoService::class.java)
         return MercadoAPI(service)
     }
 }

@@ -1,7 +1,8 @@
 package com.example.mercado.tests.remote
 
+import com.example.mercado.remote.data.pos.POSCreateRequest
 import com.example.mercado.remote.data.stores.Location
-import com.example.mercado.remote.data.stores.CreateStoreRequest
+import com.example.mercado.remote.data.stores.StoreCreateRequest
 import com.example.mercado.remote.domain.MercadoAPI
 import com.example.mercado.tests.DaggerTestComponent
 import kotlinx.coroutines.runBlocking
@@ -16,7 +17,7 @@ class TestMercadoService {
     @Inject
     lateinit var mercadoAPI: MercadoAPI
 
-    private val storeData = CreateStoreRequest(
+    private val storeData = StoreCreateRequest(
         name = "TestShop",
         external_id = "TEST-SHP-001",
         location = Location(
@@ -99,6 +100,68 @@ class TestMercadoService {
 
             // Assert
             assertNull(foundStore)
+        }
+    }
+
+    @Test
+    fun testTryCreatePOS() {
+        runBlocking {
+            // Arrange
+            val store = mercadoAPI.tryCreateStore(storeData)
+
+            val posData = POSCreateRequest(
+                name = "TestPOS",
+                fixed_amount = false,
+                store_id = store.id.toLong(),
+                external_store_id = "TEST-SHP-001",
+                external_id = "TEST001"
+            )
+
+            // Act
+            val pos = mercadoAPI.tryCreatePOS(posData)
+
+            // Assert
+            assertNotNull(pos)
+            assertEquals(posData.name, pos.name)
+            assertEquals(posData.external_id, pos.external_id)
+        }
+    }
+
+    @Test
+    fun testFindPOSByExternalID() {
+        runBlocking {
+            // Arrange
+            val store = mercadoAPI.tryCreateStore(storeData)
+
+            val posData = POSCreateRequest(
+                name = "TestPOS",
+                fixed_amount = false,
+                store_id = store.id.toLong(),
+                external_store_id = "TEST-SHP-001",
+                external_id = "TEST001"
+            )
+
+            val pos = mercadoAPI.tryCreatePOS(posData)
+
+            // Act
+            val foundPOS = mercadoAPI.getPOS(pos.external_id)!!
+
+            // Assert
+            assertEquals(pos.id, foundPOS.id)
+        }
+    }
+
+    @Test
+    fun testFindPOSByNonexistentID() {
+        runBlocking {
+            // Arrange
+            val nonexistentID = "NONEXISTENTID999"
+
+            // Act
+            val foundPOS = mercadoAPI.getPOS(nonexistentID)
+
+            // Assert
+            assertNull(foundPOS)
         }
     }
 }

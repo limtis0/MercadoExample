@@ -1,6 +1,6 @@
 package com.example.mercado.remote.data.stores
 
-data class CreateStoreRequest(
+data class StoreCreateRequest(
     val name: String,
     val external_id: String,
     val location: Location

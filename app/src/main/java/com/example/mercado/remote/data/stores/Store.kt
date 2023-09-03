@@ -1,6 +1,6 @@
 package com.example.mercado.remote.data.stores
 
-data class StoreDTO(
+data class Store(
     val id: String,
     val name: String,
     val date_creation: String,
