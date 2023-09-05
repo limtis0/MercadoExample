@@ -7,6 +7,7 @@ import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.example.mercado.BuildConfig
+import com.google.gson.GsonBuilder
 
 
 private const val BASE_URL = "https://api.mercadopago.com"
@@ -20,10 +21,14 @@ class RetrofitDIModule {
             .addInterceptor(AuthInterceptor(BuildConfig.mercadoApiKey))  // Adds API key to headers
             .build()
 
+        val gson = GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+            .create()
+
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 }

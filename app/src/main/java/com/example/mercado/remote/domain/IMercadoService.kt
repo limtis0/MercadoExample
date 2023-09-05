@@ -4,6 +4,8 @@ import com.example.mercado.remote.data.OAuth
 import com.example.mercado.remote.data.pos.POS
 import com.example.mercado.remote.data.pos.POSCreateRequest
 import com.example.mercado.remote.data.pos.POSSearchResponse
+import com.example.mercado.remote.data.qr_tramma.QRTramma
+import com.example.mercado.remote.data.qr_tramma.QRTrammaRequest
 import com.example.mercado.remote.data.stores.StoreCreateRequest
 import com.example.mercado.remote.data.stores.Store
 import com.example.mercado.remote.data.stores.StoreDeleteResponse
@@ -41,7 +43,7 @@ interface IMercadoService {
     @GET("/users/{user_id}/stores/search")
     suspend fun searchStores(
         @Path("user_id") userID: String,
-        @Query("external_id") externalId: String
+        @Query("external_id") externalID: String
     ): StoreSearchResponse
 
     @Headers("Content-Type: application/json")
@@ -54,9 +56,7 @@ interface IMercadoService {
     @Headers("Content-Type: application/json")
     @GET("/pos")
     suspend fun searchPOS(
-        @Query("external_id") externalId: String,
-        // Other optional queries may be added the same way
-        @Query("external_store_id") externalStoreId: String? = null
+        @Query("external_id") externalID: String,
     ): POSSearchResponse
 
     @Headers("Content-Type: application/json")
@@ -64,4 +64,12 @@ interface IMercadoService {
     suspend fun createPOS(
         @Body posCreateRequest: POSCreateRequest
     ): POS
+
+    @Headers("Content-Type: application/json")
+    @POST("/instore/orders/qr/seller/collectors/{user_id}/pos/{external_pos_id}/qrs")
+    suspend fun createQRTramma(
+        @Path("user_id") userID: String,
+        @Path("external_pos_id") externalPOSID: String,
+        @Body request: QRTrammaRequest
+    ): QRTramma
 }

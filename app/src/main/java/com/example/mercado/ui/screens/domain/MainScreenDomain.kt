@@ -3,12 +3,19 @@ package com.example.mercado.ui.screens.domain
 import com.example.mercado.MainActivity
 import com.example.mercado.remote.data.pos.POS
 import com.example.mercado.remote.data.pos.POSCreateRequest
+import com.example.mercado.remote.data.qr_tramma.Item
+import com.example.mercado.remote.data.qr_tramma.QRTramma
+import com.example.mercado.remote.data.qr_tramma.QRTrammaRequest
 import com.example.mercado.remote.data.stores.Location
 import com.example.mercado.remote.data.stores.Store
 import com.example.mercado.remote.data.stores.StoreCreateRequest
 import com.example.mercado.remote.domain.MercadoAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.Date
 import javax.inject.Inject
 
 class MainScreenDomain {
@@ -22,7 +29,32 @@ class MainScreenDomain {
         MainActivity.appComponent.inject(this)
     }
 
-    suspend fun getTestPOS(): POS {
+    suspend fun createTestQRTramma(): QRTramma {
+        val ldt = LocalDateTime.now().plusHours(2)
+        val request = QRTrammaRequest(
+            title = "Test order",
+            description = "Test description",
+            notification_url = "https://www.example.com",
+            total_amount = BigDecimal("10.0"),
+            expiration_date = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()),
+            items = listOf(
+                Item(
+                    sku_number = "A123K9191938",
+                    category = "marketplace",
+                    title = "Test Product",
+                    description = "This is the Test Product",
+                    unit_price = BigDecimal("10.0"),
+                    quantity = 1,
+                    unit_measure = "unit",
+                    total_amount = BigDecimal("10.0")
+                )
+            )
+        )
+
+        return mercadoAPI.createQRTramma(getTestPOS().external_id, request)
+    }
+
+    private suspend fun getTestPOS(): POS {
         return withContext(Dispatchers.IO) {
             if (pos != null) {
                 pos!!
@@ -59,9 +91,9 @@ class MainScreenDomain {
         return mercadoAPI.tryCreatePOS(
             POSCreateRequest(
                 name = "TestPOS",
-                fixed_amount = false,
+                fixed_amount = true,
                 store_id = store.id.toLong(),
-                external_store_id = "TEST-SHP-001",
+                external_store_id = store.external_id,
                 external_id = "TEST001"
             )
         )

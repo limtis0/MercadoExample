@@ -1,4 +1,4 @@
-package com.example.mercado.remote.data
+package com.example.mercado.remote.data.common
 
 data class Paging(
     val total: Int,

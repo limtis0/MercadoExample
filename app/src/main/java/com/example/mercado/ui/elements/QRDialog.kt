@@ -1,5 +1,6 @@
 package com.example.mercado.ui.elements
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,12 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.core.graphics.drawable.toDrawable
 import coil.compose.AsyncImage
+import com.example.mercado.ui.common.generateQR
+import com.google.zxing.qrcode.QRCodeWriter
 
 @Composable
-fun ImageDialog(url: String, onDismissRequest: () -> Unit) {
+fun QRDialog(text: String, onDismissRequest: () -> Unit) {
+    QRCodeWriter()
+
     Dialog(
         onDismissRequest = {
             // Dismiss the dialog when clicking outside or pressing back
@@ -27,8 +34,8 @@ fun ImageDialog(url: String, onDismissRequest: () -> Unit) {
                 .padding(16.dp),
             contentAlignment = Alignment.Center,
         ) {
-            AsyncImage(
-                model = url,
+            Image(
+                generateQR(text).asImageBitmap(),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
             )

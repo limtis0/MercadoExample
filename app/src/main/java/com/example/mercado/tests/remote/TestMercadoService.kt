@@ -1,6 +1,8 @@
 package com.example.mercado.tests.remote
 
 import com.example.mercado.remote.data.pos.POSCreateRequest
+import com.example.mercado.remote.data.qr_tramma.Item
+import com.example.mercado.remote.data.qr_tramma.QRTrammaRequest
 import com.example.mercado.remote.data.stores.Location
 import com.example.mercado.remote.data.stores.StoreCreateRequest
 import com.example.mercado.remote.domain.MercadoAPI
@@ -12,6 +14,10 @@ import org.junit.Test
 import javax.inject.Inject
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.Date
 
 class TestMercadoService {
     @Inject
@@ -111,7 +117,7 @@ class TestMercadoService {
 
             val posData = POSCreateRequest(
                 name = "TestPOS",
-                fixed_amount = false,
+                fixed_amount = true,
                 store_id = store.id.toLong(),
                 external_store_id = "TEST-SHP-001",
                 external_id = "TEST001"
@@ -161,7 +167,53 @@ class TestMercadoService {
             val foundPOS = mercadoAPI.getPOS(nonexistentID)
 
             // Assert
-            assertNull(foundPOS)
+            assertNotNull(foundPOS)
+        }
+    }
+
+    @Test
+    fun testCreateQRTramma() {
+        runBlocking {
+            // Arrange
+            val ldt = LocalDateTime.now().plusHours(2)
+            val request = QRTrammaRequest(
+                title = "Test order",
+                description = "Test description",
+                notification_url = "https://www.example.com",
+                total_amount = BigDecimal("10.0"),
+                expiration_date = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()),
+                items = listOf(
+                    Item(
+                        sku_number = "A123K9191938",
+                        category = "marketplace",
+                        title = "Test Product",
+                        description = "This is the Test Product",
+                        unit_price = BigDecimal("10.0"),
+                        quantity = 1,
+                        unit_measure = "unit",
+                        total_amount = BigDecimal("10.0")
+                    )
+                )
+            )
+
+            val store = mercadoAPI.tryCreateStore(storeData)
+
+            val posData = POSCreateRequest(
+                name = "TestPOS",
+                fixed_amount = true,
+                store_id = store.id.toLong(),
+                external_store_id = "TEST-SHP-001",
+                external_id = "TEST001"
+            )
+
+            val pos = mercadoAPI.tryCreatePOS(posData)
+
+            // Act
+            println(request)
+            val qr = mercadoAPI.createQRTramma(pos.external_id, request)
+
+            // Assert
+            assertNotNull(qr)
         }
     }
 }

@@ -4,6 +4,8 @@ import com.example.mercado.BuildConfig
 import com.example.mercado.remote.data.OAuth
 import com.example.mercado.remote.data.pos.POS
 import com.example.mercado.remote.data.pos.POSCreateRequest
+import com.example.mercado.remote.data.qr_tramma.QRTramma
+import com.example.mercado.remote.data.qr_tramma.QRTrammaRequest
 import com.example.mercado.remote.data.stores.Store
 import com.example.mercado.remote.data.stores.StoreCreateRequest
 import com.example.mercado.remote.data.stores.StoreResponseError
@@ -82,5 +84,16 @@ class MercadoAPI(private val service: IMercadoService) {
 
             throw error
         }
+    }
+
+    suspend fun createQRTramma(
+        externalPOSID: String,
+        qrTrammaRequest: QRTrammaRequest
+    ): QRTramma {
+        return service.createQRTramma(
+            BuildConfig.mercadoUserId,
+            externalPOSID,
+            qrTrammaRequest
+        )
     }
 }
