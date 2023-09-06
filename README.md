@@ -27,5 +27,5 @@ Dagger is used for Dependency Injection pattern, the modules' descriptions are p
 ### Retrofit
 Used for API calls
 
-## Remote
+### Remote
 Contains details of MercadoPago API for Retrofit, all dataclasses, as well as facade DI module
