@@ -8,14 +8,14 @@ and authorize through it
 3. After authorization you will be redirected and in the link there will be a code in format `TG-XXX...`
 4. Get application's secret in the "Credentials" page
 5. Make a POST request to `https://api.mercadopago.com/oauth/token` with body similar to
-   `{  
+   ```{  
    "client_id": APPLICATION_ID,  
    "client_secret" : APPLICATION_SECRET,  
    "grant_type": "authorization_code",  
    "code": "TG-XXXXX...",  
    "redirect_uri": REDIRECT_URL,  
    "test_token": false  
-   }`
+   }```
 6. Set `mercadoApiKey`, `mercadoRefreshToken` and `mercadoUserID` in `grade.properties`
 
 
