@@ -29,12 +29,12 @@ android {
 
             buildConfigField("String", "mercadoApiKey", "\"${mercadoApiKey}\"")
             buildConfigField("String", "mercadoRefreshToken", "\"${mercadoRefreshToken}\"")
-            buildConfigField("String", "mercadoUserId", "\"${mercadoUserId}\"")
+            buildConfigField("String", "mercadoUserID", "\"${mercadoUserID}\"")
         }
         debug {
             buildConfigField("String", "mercadoApiKey", "\"${mercadoApiKey}\"")
             buildConfigField("String", "mercadoRefreshToken", "\"${mercadoRefreshToken}\"")
-            buildConfigField("String", "mercadoUserId", "\"${mercadoUserId}\"")
+            buildConfigField("String", "mercadoUserID", "\"${mercadoUserID}\"")
         }
     }
     compileOptions {

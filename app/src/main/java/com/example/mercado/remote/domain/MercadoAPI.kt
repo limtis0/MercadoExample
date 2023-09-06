@@ -16,7 +16,7 @@ import retrofit2.HttpException
 class MercadoAPI(private val service: IMercadoService) {
     suspend fun refreshAccessToken(): OAuth {
         return service.refreshAccessToken(
-            clientID = BuildConfig.mercadoUserId,
+            clientID = BuildConfig.mercadoUserID,
             clientSecret = BuildConfig.mercadoApiKey,
             grantType = "refresh_token",
             refreshToken = BuildConfig.mercadoRefreshToken
@@ -25,7 +25,7 @@ class MercadoAPI(private val service: IMercadoService) {
 
     suspend fun getStore(externalID: String): Store? {
         try {
-            val response = service.searchStores(BuildConfig.mercadoUserId, externalID)
+            val response = service.searchStores(BuildConfig.mercadoUserID, externalID)
             return response.results[0]
         } catch (error: HttpException) {
             if (error.code() == 404) {  // Shop not found
@@ -37,7 +37,7 @@ class MercadoAPI(private val service: IMercadoService) {
 
     suspend fun tryCreateStore(storeCreateRequest: StoreCreateRequest): Store {
         try {
-            return service.createNewStore(BuildConfig.mercadoUserId, storeCreateRequest)
+            return service.createNewStore(BuildConfig.mercadoUserID, storeCreateRequest)
         } catch (error: HttpException) {
             if (error.code() == 400) {
                 val errorResponseJSON = error.response()?.errorBody()?.string()
@@ -58,7 +58,7 @@ class MercadoAPI(private val service: IMercadoService) {
 
     suspend fun deleteStore(shopID: String): Boolean {
         return try {
-            service.deleteStoreByID(BuildConfig.mercadoUserId, shopID)
+            service.deleteStoreByID(BuildConfig.mercadoUserID, shopID)
             true
         } catch (error: HttpException) {
             false
@@ -92,7 +92,7 @@ class MercadoAPI(private val service: IMercadoService) {
         qrTrammaRequest: QRTrammaRequest
     ): QRTramma {
         return service.createQRTramma(
-            BuildConfig.mercadoUserId,
+            BuildConfig.mercadoUserID,
             externalPOSID,
             qrTrammaRequest
         )
