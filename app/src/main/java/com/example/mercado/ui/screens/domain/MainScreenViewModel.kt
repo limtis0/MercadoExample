@@ -1,6 +1,9 @@
 package com.example.mercado.ui.screens.domain
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
 import com.example.mercado.MainActivity
+import com.example.mercado.remote.data.orders.Order
 import com.example.mercado.remote.data.pos.POS
 import com.example.mercado.remote.data.pos.POSCreateRequest
 import com.example.mercado.remote.data.qr_tramma.Item
@@ -18,15 +21,22 @@ import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
 
-class MainScreenDomain {
+class MainScreenViewModel : ViewModel() {
     @Inject
     lateinit var mercadoAPI: MercadoAPI
 
-    private var store: Store? = null
-    private var pos: POS? = null
+    private val store = mutableStateOf<Store?>(null)
+    private val pos = mutableStateOf<POS?>(null)
+    private val lastQRRequest = mutableStateOf<QRTrammaRequest?>(null)
 
     init {
         MainActivity.appComponent.inject(this)
+    }
+
+    suspend fun getCurrentOrder(): Order? {
+        if (lastQRRequest.value == null) { return null }
+
+        return mercadoAPI.getOrder(lastQRRequest.value!!.external_reference)
     }
 
     suspend fun createTestQRTramma(): QRTramma {
@@ -51,21 +61,24 @@ class MainScreenDomain {
             )
         )
 
-        return mercadoAPI.createQRTramma(getTestPOS().external_id, request)
+        val qr = mercadoAPI.createQRTramma(getTestPOS().external_id, request)
+        lastQRRequest.value = request
+
+        return qr
     }
 
     private suspend fun getTestPOS(): POS {
         return withContext(Dispatchers.IO) {
-            if (pos != null) {
-                pos!!
+            if (pos.value != null) {
+                pos.value!!
             }
 
-            if (store == null) {
-                store = createTestStore()
+            if (store.value == null) {
+                store.value = createTestStore()
             }
 
-            pos = createTestPOS(store!!)
-            pos!!
+            pos.value = createTestPOS(store.value!!)
+            pos.value!!
         }
     }
 

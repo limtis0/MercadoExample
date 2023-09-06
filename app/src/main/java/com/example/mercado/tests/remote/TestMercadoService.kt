@@ -7,10 +7,8 @@ import com.example.mercado.remote.data.stores.Location
 import com.example.mercado.remote.data.stores.StoreCreateRequest
 import com.example.mercado.remote.domain.MercadoAPI
 import com.example.mercado.tests.DaggerTestComponent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
