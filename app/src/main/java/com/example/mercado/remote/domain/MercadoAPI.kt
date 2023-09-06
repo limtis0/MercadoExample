@@ -2,6 +2,7 @@ package com.example.mercado.remote.domain
 
 import com.example.mercado.BuildConfig
 import com.example.mercado.remote.data.OAuth
+import com.example.mercado.remote.data.orders.Order
 import com.example.mercado.remote.data.pos.POS
 import com.example.mercado.remote.data.pos.POSCreateRequest
 import com.example.mercado.remote.data.qr_tramma.QRTramma
@@ -95,5 +96,15 @@ class MercadoAPI(private val service: IMercadoService) {
             externalPOSID,
             qrTrammaRequest
         )
+    }
+
+    suspend fun getOrder(externalReference: String): Order? {
+        val orders = service.searchMerchantOrders(externalReference)
+
+        if (orders.total >= 1) {
+            return orders.elements[0]
+        }
+
+        return null
     }
 }

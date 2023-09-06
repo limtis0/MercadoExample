@@ -1,6 +1,7 @@
 package com.example.mercado.remote.domain
 
 import com.example.mercado.remote.data.OAuth
+import com.example.mercado.remote.data.orders.OrderSearch
 import com.example.mercado.remote.data.pos.POS
 import com.example.mercado.remote.data.pos.POSCreateRequest
 import com.example.mercado.remote.data.pos.POSSearchResponse
@@ -72,4 +73,9 @@ interface IMercadoService {
         @Path("external_pos_id") externalPOSID: String,
         @Body request: QRTrammaRequest
     ): QRTramma
+
+    @GET("/merchant_orders/search")
+    suspend fun searchMerchantOrders(
+        @Query("external_reference") externalReference: String
+    ): OrderSearch
 }

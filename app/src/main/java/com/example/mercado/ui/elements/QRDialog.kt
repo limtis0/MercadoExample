@@ -12,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.core.graphics.drawable.toDrawable
-import coil.compose.AsyncImage
 import com.example.mercado.ui.common.generateQR
 import com.google.zxing.qrcode.QRCodeWriter
 

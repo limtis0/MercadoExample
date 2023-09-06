@@ -7,17 +7,20 @@ import com.example.mercado.remote.data.stores.Location
 import com.example.mercado.remote.data.stores.StoreCreateRequest
 import com.example.mercado.remote.domain.MercadoAPI
 import com.example.mercado.tests.DaggerTestComponent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
-import javax.inject.Inject
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Before
+import org.junit.Test
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
+import javax.inject.Inject
 
 class TestMercadoService {
     @Inject
@@ -209,11 +212,64 @@ class TestMercadoService {
             val pos = mercadoAPI.tryCreatePOS(posData)
 
             // Act
-            println(request)
             val qr = mercadoAPI.createQRTramma(pos.external_id, request)
 
             // Assert
             assertNotNull(qr)
+        }
+    }
+
+    @Test
+    fun testGetOrder() {
+        runBlocking {
+            // Arrange
+            val store = mercadoAPI.tryCreateStore(storeData)
+
+            val posData = POSCreateRequest(
+                name = "TestPOS",
+                fixed_amount = true,
+                store_id = store.id.toLong(),
+                external_store_id = "TEST-SHP-001",
+                external_id = "TEST001"
+            )
+
+            val pos = mercadoAPI.tryCreatePOS(posData)
+
+            val ldt = LocalDateTime.now().plusHours(2)
+            val request = QRTrammaRequest(
+                title = "Test order",
+                description = "Test description",
+                notification_url = "https://www.example.com",
+                total_amount = BigDecimal("10.0"),
+                expiration_date = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()),
+                items = listOf(
+                    Item(
+                        sku_number = "A123K9191938",
+                        category = "marketplace",
+                        title = "Test Product",
+                        description = "This is the Test Product",
+                        unit_price = BigDecimal("10.0"),
+                        quantity = 1,
+                        unit_measure = "unit",
+                        total_amount = BigDecimal("10.0")
+                    )
+                )
+            )
+
+            mercadoAPI.createQRTramma(pos.external_id, request)
+
+            // Act
+            delay(10_000L)  // It takes time to write to orders
+
+            val order = mercadoAPI.getOrder(request.external_reference)
+
+            // Assert
+            assertNotNull(order)
+            order!!
+
+            assertEquals("opened", order.status)
+            assertEquals("payment_required", order.order_status)
+            assertEquals(false, order.cancelled)
         }
     }
 }
