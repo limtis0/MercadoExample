@@ -16,7 +16,7 @@ and authorize through it
    "redirect_uri": REDIRECT_URL,  
    "test_token": false  
    }```
-6. Set `mercadoApiKey`, `mercadoRefreshToken` and `mercadoUserID` in `grade.properties`
+6. Set `mercadoApiKey`, `mercadoRefreshToken` and `mercadoUserID` in `gradle.properties`
 
 
 [Video](https://youtu.be/I0yR0awzo0A)
